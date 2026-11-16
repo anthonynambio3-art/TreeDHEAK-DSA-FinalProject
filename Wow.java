@@ -1,11 +1,5 @@
 public class Wow {
 /*
-                                                                            CE
-                                       OLDBLDG                                                               ELB
-            1st                  2nd                        3rd                        1st              2nd              3rd            4th 
-         1              1   2   3   4   5            1    2   3   4   5              1   2   3        1   2   3       1   2   3       1   2   3  
-
-
 College of Engineering
 
         OLDBLDG
