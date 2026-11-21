@@ -1,4 +1,4 @@
-public class Wow {
+public class TreeStructure {
 /*
 College of Engineering
 
