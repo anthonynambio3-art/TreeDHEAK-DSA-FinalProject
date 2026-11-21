@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Management System</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f6f9;
+}
+
+header{
+    background:#1e3a8a;
+    color:white;
+    padding:15px;
+    text-align:center;
+}
+
+.container{
+    width:90%;
+    max-width:1200px;
+    margin:20px auto;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.card h2{
+    margin-bottom:15px;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    margin-bottom:10px;
+}
+
+/* START NG SEARCH NG ROOM */
+select,
+input{
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th, table td{
+    border:1px solid #ddd;
+    padding:10px;
+}
+
+table th{
+    background:#2563eb;
+    color:white;
+}
+
+.status-vacant{
+    color:green;
+    font-weight:bold;
+}
+
+.status-occupied{
+    color:red;
+    font-weight:bold;
+}
+
+.status-maintenance{
+    color:orange;
+    font-weight:bold;
+}
+
+.search-result{
+    margin-top:15px;
+    padding:20px;
+    border-radius:12px;
+    background:#f8fafc;
+    border-left:6px solid #2563eb;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.search-result h3{
+    color:#2563eb;
+    margin-bottom:10px;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.vacant{
+    background:#16a34a;
+}
+
+.occupied{
+    background:#dc2626;
+}
+
+.maintenance{
+    background:#f59e0b;
+}
+.available-card{
+    background:white;
+    margin-top:10px;
+    padding:15px;
+    border-left:5px solid #16a34a;
+    border-radius:10px;
+}
+
+.status-badge{
+    display:inline-block;
+    margin-top:10px;
+    padding:8px 16px;
+    border-radius:50px;
+    font-weight:bold;
+}
+
+.vacant{
+    background:#16a34a;
+}
+
+.occupied{
+    background:#dc2626;
+}
+
+.maintenance{
+    background:#f59e0b;
+}
+
+.result-body{
+    padding:25px;
+}
+
+/* SEARCH NG ROOM END */
+/* START NG AVAILABLE ROOMS */
+
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px;
+    margin-bottom:10px;
+    background:#f8fafc;
+    border-radius:12px;
+}
+
+.label{
+    font-weight:bold;
+    color:#475569;
+}
+
+.value{
+    color:#0f172a;
+    font-weight:600;
+}
+
+.room-grid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:15px;
+    margin-top:20px;
+}
+
+.room-cell{
+    height:100px;
+    border-radius:12px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.room-name{
+    font-size:18px;
+}
+
+.room-status{
+    font-size:12px;
+    margin-top:5px;
+}
+
+.vacant{
+    background:#22c55e;
+}
+
+.occupied{
+    background:#ef4444;
+}
+
+.maintenance{
+    background:#facc15;
+    color:black;
+}
+
+.building-title{
+    margin-top:30px;
+    margin-bottom:15px;
+    color:#1e3a8a;
+}
+
+.building-table{
+    margin-top:20px;
+}
+
+.building-table h2{
+    margin-top:25px;
+    color:#1e3a8a;
+}
+
+.building-table table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 4px 15px rgba(0,0,0,.1);
+}
+
+.building-table th{
+    background:#2563eb;
+    color:white;
+    padding:15px;
+}
+
+.building-table td{
+    padding:15px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.building-table tr:hover{
+    background:#f8fafc;
+}
+
+/* END NG AVAILABLE ROOM LIST */
+/* MAINTENANCE MODAL DESIGN START */
+
+.maintenance-modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.6);
+    z-index:9999;
+
+    justify-content:center;
+    align-items:center;
+}
+
+.maintenance-content{
+    width:400px;
+    max-width:90%;
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+
+.maintenance-content h2{
+    color:#dc2626;
+    margin-bottom:15px;
+}
+
+.maintenance-content input{
+    width:100%;
+    margin-top:15px;
+}
+
+.maintenance-content button{
+    margin-top:10px;
+    margin-right:5px;
+}
+
+/* Search ng Maintenance END DESIGN */
+
+/* OCCUPIED ROOMS DESIGN START */
+
+.occupied-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.occupied-card table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.occupied-card th{
+    background:#dc2626;
+    color:white;
+    padding:15px;
+    font-size:15px;
+}
+
+.occupied-card td{
+    padding:15px;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.occupied-card tr:hover{
+    background:#fff5f5;
+}
+
+.room-badge{
+    background:#dc2626;
+    color:white;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.occupant-name{
+    font-weight:bold;
+    color:#1e3a8a;
+}
+
+.schedule-text{
+    color:#475569;
+    font-size:14px;
+}
+
+/* Occupied Rooms DESIGN END */
+
+.room-cell{
+    position:relative;
+    cursor:pointer;
+}
+
+.room-tooltip{
+    visibility:hidden;
+    opacity:0;
+
+    position:absolute;
+    bottom:110%;
+    left:50%;
+    transform:translateX(-50%);
+
+    width:250px;
+
+    background:#1e293b;
+    color:white;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    z-index:1000;
+
+    transition:.3s;
+
+    text-align:left;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.3);
+}
+
+.room-cell:hover .room-tooltip{
+    visibility:visible;
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>College of Engineering OccupanCEng System</h1>
+</header>
+
+<div class="container">
+
+    <div class="card">
+    <h2>Search Room</h2>
+
+    <select id="roomName">
+        <option value="">-- Select Room --</option>
+
+        <optgroup label="Old Building">
+            <option>Rm. 101</option>
+            <option>Rm. 201</option>
+            <option>Rm. 202</option>
+            <option>Rm. 203</option>
+            <option>Rm. 204</option>
+            <option>DES LAB</option>
+            <option>Rm. 301</option>
+            <option>Rm. 302</option>
+            <option>Rm. 303</option>
+            <option>Rm. 304</option>
+            <option>Rm. 305</option>
+        </optgroup>
+
+        <optgroup label="Engineering Laboratory Building">
+            <option>ELB 11</option>
+            <option>ELB 12</option>
+            <option>ELB 13</option>
+            <option>ELB 21</option>
+            <option>ELB 22</option>
+            <option>ELB 23</option>
+            <option>ELB 31</option>
+            <option>ELB 32</option>
+            <option>ELB 33</option>
+            <option>ELB 41</option>
+            <option>ELB 42</option>
+            <option>ELB 43</option>
+            <option>ELB 51</option>
+            <option>ELB 52</option>
+            <option>ELB 53</option>
+        </optgroup>
+    </select>
+
+    <button onclick="searchRoom()">Search</button>
+
+    <div id="roomInfo" style="margin-top:15px"></div>
+</div>
+
+    <div class="card">
+        <h2>Add Schedule</h2>
+         
+        <label>Room</label>
+        <select id="scheduleRoom" onchange="checkRoomStatus()">
+        <option value="">-- Select Room --</option>
+         
+        <optgroup label="Old Building">
+        <option>Rm. 101</option>
+        <option>Rm. 201</option>
+        <option>Rm. 202</option>
+        <option>Rm. 203</option>
+        <option>Rm. 204</option>
+        <option>DES LAB</option>
+        <option>Rm. 301</option>
+        <option>Rm. 302</option>
+        <option>Rm. 303</option>
+        <option>Rm. 304</option>
+        <option>Rm. 305</option>
+        </optgroup>
+         
+        <optgroup label="Engineering Laboratory Building">
+        <option>ELB 11</option>
+        <option>ELB 12</option>
+        <option>ELB 13</option>
+        <option>ELB 21</option>
+        <option>ELB 22</option>
+        <option>ELB 23</option>
+        <option>ELB 31</option>
+        <option>ELB 32</option>
+        <option>ELB 33</option>
+        <option>ELB 41</option>
+        <option>ELB 42</option>
+        <option>ELB 43</option>
+        <option>ELB 51</option>
+        <option>ELB 52</option>
+        <option>ELB 53</option>
+        </optgroup>
+        </select>
+         
+        <label>Class / Occupant</label>
+        <input type="text" id="occupant" placeholder="Class / Occupant">
+         
+        <label>Faculty In-Charge</label>
+        <select id="faculty">
+
+            <option value="">-- Select Faculty --</option>
+
+            <option>Engr. Alexandra Monleon</option>
+            <option>Engr. Jerold Lantoria</option>
+            <option>Engr. Ana Molato</option>
+            <option>Engr. Desiree Malalad</option>
+            <option>Engr. Erol Mampusti</option>
+
+        </select>
+        <label>Start Date & Time</label>
+        <input type="datetime-local" id="start">
+         
+        <label>End Date & Time</label>
+        <input type="datetime-local" id="end">
+         
+        <label>Reason for Room Usage</label>
+
+        <select id="reason" onchange="toggleOtherReason()">
+
+            <option value="">-- Select Reason --</option>
+
+            <option>Regular Class</option>
+
+            <option>Laboratory Activity</option>
+
+            <option>Department Meeting</option>
+
+            <option>Faculty Meeting</option>
+
+            <option>Student Organization Meeting</option>
+
+            <option>Research Activity</option>
+
+            <option>Seminar / Workshop</option>
+
+            <option>Review Session</option>
+
+            <option>Thesis Defense</option>
+
+            <option>Special Event</option>
+
+            <option>Others</option>
+
+        </select>
+
+        <input type="text" id="otherReason"
+            placeholder="Specify reason"
+            style="display:none;">
+
+        <button id="scheduleBtn" onclick="addSchedule()">
+            Save Schedule
+        </button>
+    </div>
+
+    <div class="card">
+        <h2>Available Rooms Dashboard</h2>
+
+        <button onclick="loadAvailable()">
+            Refresh Room Status
+        </button>
+
+        <div id="availableRooms"></div>
+    </div>
+
+
+    <div class="card">
+        <h2>Occupied Rooms</h2>
+
+        <button onclick="loadOccupied()">
+            Load Occupied Rooms
+        </button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Room</th>
+                    <th>Occupant</th>
+                    <th>Schedule</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="occupiedTable"></tbody>
+        </table>
+    </div>
+    <div id="maintenancePanel" class="maintenance-modal">
+        <div class="maintenance-content">
+
+            <h2>🔒 Admin Access Required</h2>
+
+            <p>
+                This room is currently under maintenance.
+                Only administrators can remove maintenance mode.
+            </p>
+
+            <input
+                type="password"
+                id="adminPassword"
+                placeholder="Admin Password">
+
+            <button onclick="removeMaintenance()">
+                Remove Maintenance
+            </button>
+
+            <button onclick="closeMaintenancePanel()">
+                Close
+            </button>
+
+        </div>
+    </div> 
+<script>
+window.onload = function(){
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month =
+        String(now.getMonth() + 1)
+        .padStart(2, "0");
+
+    const day =
+        String(now.getDate())
+        .padStart(2, "0");
+
+    const hour =
+        String(now.getHours())
+        .padStart(2, "0");
+
+    const minute =
+        String(now.getMinutes())
+        .padStart(2, "0");
+
+    const minDateTime =
+        `${year}-${month}-${day}T${hour}:${minute}`;
+
+    document.getElementById("start")
+        .min = minDateTime;
+
+    document.getElementById("end")
+        .min = minDateTime;
+}
+
+async function loadAvailable(){
+
+    const response =
+        await fetch("/api/rooms");
+
+    const rooms =
+        await response.json();
+
+    let firstFloor = "";
+    let secondFloor = "";
+    let thirdFloor = "";
+
+    let elb1 = "";
+    let elb2 = "";
+    let elb3 = "";
+    let elb4 = "";
+    let elb5 = "";
+
+    rooms.forEach(room => {
+
+        let colorClass = "";
+
+        if(room.status === "VACANT"){
+            colorClass = "vacant";
+        }
+        else if(room.status === "OCCUPIED"){
+            colorClass = "occupied";
+        }
+        else{
+            colorClass = "maintenance";
+        }
+
+        let tooltip = "";
+
+        if(room.status === "OCCUPIED"){
+
+            tooltip = `
+                <div class="room-tooltip">
+
+                    <strong>Occupant</strong><br>
+                    ${room.occupant || "Unknown"}
+
+                    <br><br>
+
+                    <strong>Schedule</strong><br>
+                    ${room.schedule || "-"}
+
+                </div>
+            `;
+        }
+        else if(room.status === "MAINTENANCE"){
+
+            tooltip = `
+                <div class="room-tooltip">
+
+                    <strong>Status</strong><br>
+                    Under Maintenance
+
+                </div>
+            `;
+        }
+
+        let card = `
+            <div class="room-cell ${colorClass}">
+
+                <div class="room-name">
+                    ${room.name}
+                </div>
+
+                <div class="room-status">
+                    ${room.status}
+                </div>
+
+                ${tooltip}
+
+            </div>
+        `;
+
+        if(room.name === "Rm. 101"){
+
+    firstFloor += card;
+
+    }
+    else if(
+        room.name === "Rm. 201" ||
+        room.name === "Rm. 202" ||
+        room.name === "Rm. 203" ||
+        room.name === "Rm. 204" ||
+        room.name === "DES LAB"
+    ){
+
+        secondFloor += card;
+
+    }
+    else if(
+        room.name === "Rm. 301" ||
+        room.name === "Rm. 302" ||
+        room.name === "Rm. 303" ||
+        room.name === "Rm. 304" ||
+        room.name === "Rm. 305"
+    ){
+
+        thirdFloor += card;
+
+    }
+    else if(
+        room.name === "ELB 11" ||
+        room.name === "ELB 12" ||
+        room.name === "ELB 13"
+    ){
+
+        elb1 += card;
+
+    }
+    else if(
+        room.name === "ELB 21" ||
+        room.name === "ELB 22" ||
+        room.name === "ELB 23"
+    ){
+
+        elb2 += card;
+
+    }
+    else if(
+        room.name === "ELB 31" ||
+        room.name === "ELB 32" ||
+        room.name === "ELB 33"
+    ){
+
+        elb3 += card;
+
+    }
+    else if(
+        room.name === "ELB 41" ||
+        room.name === "ELB 42" ||
+        room.name === "ELB 43"
+    ){
+
+        elb4 += card;
+
+    }
+    else{
+
+        elb5 += card;
+    }
+    });
+
+    document.getElementById("availableRooms").innerHTML = `
+        <h2 class="building-title">
+        🏢 Old Building
+        </h2>
+
+        <h3>1st Floor</h3>
+        <div class="room-grid">
+            ${firstFloor}
+        </div>
+
+        <h3>2nd Floor</h3>
+        <div class="room-grid">
+            ${secondFloor}
+        </div>
+
+        <h3>3rd Floor</h3>
+        <div class="room-grid">
+            ${thirdFloor}
+        </div>
+
+        <h2 class="building-title">
+        🏢 Engineering Laboratory Building
+        </h2>
+
+        <h3>1st Floor</h3>
+        <div class="room-grid">
+            ${elb1}
+        </div>
+
+        <h3>2nd Floor</h3>
+        <div class="room-grid">
+            ${elb2}
+        </div>
+
+        <h3>3rd Floor</h3>
+        <div class="room-grid">
+            ${elb3}
+        </div>
+
+        <h3>4th Floor</h3>
+        <div class="room-grid">
+            ${elb4}
+        </div>
+
+        <h3>5th Floor</h3>
+        <div class="room-grid">
+            ${elb5}
+        </div>
+
+        `;
+}
+
+async function loadOccupied(){
+
+    const response =
+        await fetch("/api/occupied");
+
+    const rooms =
+        await response.json();
+
+    let html = "";
+
+    rooms.forEach(room => {
+
+        html += `
+        <tr>
+            <td>${room.name}</td>
+
+            <td>${room.occupant}</td>
+
+            <td>${room.schedule}</td>
+
+            <td>
+                <button
+                    onclick="leaveRoom('${room.name}')"
+                    style="background:#dc2626;">
+                    Leave Room
+                </button>
+            </td>
+        </tr>
+        `;
+    });
+
+    document.getElementById(
+        "occupiedTable").innerHTML = html;
+}
+
+async function searchRoom(){
+
+    const name =
+        document.getElementById("roomName").value;
+
+    if(name === ""){
+        alert("Please select a room.");
+        return;
+    }
+
+    const response =
+        await fetch("/api/search/" + encodeURIComponent(name));
+
+    const room = await response.json();
+
+    const panel = document.getElementById("maintenancePanel");
+        panel.style.display = "none";
+
+    let badgeClass = "";
+
+    if(room.status === "VACANT"){
+        badgeClass = "vacant";
+    }
+    else if(room.status === "OCCUPIED"){
+        badgeClass = "occupied";
+    }
+    else{
+        badgeClass = "maintenance";
+    }
+
+    document.getElementById("roomInfo").innerHTML = `
+        <div class="search-result">
+
+            <h3>${room.name}</h3>
+
+            <p>
+                <strong>Status:</strong>
+                <span class="badge ${badgeClass}">
+                    ${room.status}
+                </span>
+            </p>
+
+            <p>
+                <strong>Location:</strong>
+                ${room.location}
+            </p>
+
+            <p>
+                <strong>Occupant:</strong>
+                ${room.occupant || "None"}
+            </p>
+
+            <p>
+                <strong>Schedule:</strong>
+                ${room.schedule || "No Schedule"}
+            </p>
+
+        </div>
+    `;
+}
+
+async function addSchedule(){
+
+    const roomName =
+        document.getElementById("scheduleRoom").value;
+
+    const roomResponse =
+        await fetch(
+            "/api/search/" +
+            encodeURIComponent(roomName));
+
+    const roomInfo =
+        await roomResponse.json();
+
+    if(roomInfo.status === "MAINTENANCE"){
+        alert(
+            "This room is under maintenance."
+        );
+        return;
+    }
+
+    const startDate =new Date(document.getElementById("start").value);
+
+    const endDate =
+        new Date(
+            document.getElementById("end").value);
+
+    const now =
+        new Date();
+
+    if(startDate < now){
+
+        alert(
+            "Start date cannot be in the past."
+        );
+
+        return;
+    }
+
+    if(endDate <= startDate){
+
+        alert(
+            "End date must be later than start date."
+        );
+
+        return;
+    }
+
+    const selectedReason = document.getElementById("reason").value;
+
+    const otherReason =
+        document.getElementById("otherReason").value;
+
+    if(selectedReason === "Others" &&
+    otherReason.trim() === ""){
+
+        alert(
+            "Please specify the reason."
+        );
+
+        return;
+    }
+
+    const body = {
+        room: roomName,
+
+        occupant:
+            document.getElementById("occupant").value,
+
+        faculty:
+            document.getElementById("faculty").value,
+
+        start:
+            document.getElementById("start").value,
+
+        end:
+            document.getElementById("end").value,
+        reason:
+            document.getElementById("reason").value === "Others"
+                ? document.getElementById("otherReason").value
+                : document.getElementById("reason").value,
+    };
+
+    alert("Schedule Added");
+
+    loadAvailable();
+}
+
+async function checkRoomStatus(){
+
+    const roomName =
+        document.getElementById("scheduleRoom").value;
+
+    const panel =
+        document.getElementById("maintenancePanel");
+
+    const btn =
+        document.getElementById("scheduleBtn");
+
+    if(roomName === ""){
+
+        panel.style.display = "none";
+
+        btn.disabled = false;
+        btn.innerText = "Save Schedule";
+
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch(
+                "/api/search/" +
+                encodeURIComponent(roomName));
+
+        const room =
+            await response.json();
+
+        if(room.status === "MAINTENANCE"){
+
+            panel.style.display = "flex";
+
+            btn.disabled = true;
+
+            btn.innerText =
+                "Room Under Maintenance";
+
+            btn.style.cursor =
+                "not-allowed";
+
+            btn.style.background =
+                "#9ca3af";
+
+        }else{
+
+            panel.style.display = "none";
+
+            btn.disabled = false;
+
+            btn.innerText =
+                "Save Schedule";
+
+            btn.style.cursor =
+                "pointer";
+
+            btn.style.background =
+                "#2563eb";
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        panel.style.display =
+            "none";
+
+        btn.disabled = false;
+
+        btn.innerText =
+            "Save Schedule";
+    }
+}
+
+function closeMaintenancePanel(){
+
+    document.getElementById(
+        "maintenancePanel").style.display =
+        "none";
+
+    document.getElementById(
+        "adminPassword").value = "";
+}
+
+async function removeMaintenance(){
+
+    const room = document.getElementById("scheduleRoom").value;
+
+    const password = document.getElementById("adminPassword").value;
+
+    if(password === ""){
+        alert("Enter admin password.");
+        return;
+    }
+
+    const response =
+        await fetch(
+            "/api/maintenance/remove",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    room: room,
+                    password: password
+                })
+            });
+
+    const result =
+        await response.text();
+
+    alert(result);
+
+    if(result === "Maintenance Removed."){
+
+        const btn =
+            document.getElementById(
+                "scheduleBtn");
+
+        document.getElementById(
+            "maintenancePanel").style.display =
+            "none";
+
+        document.getElementById(
+            "adminPassword").value = "";
+
+        btn.disabled = false;
+
+        btn.innerText = "Save Schedule";
+
+        btn.style.background = "#2563eb";
+
+        btn.style.cursor = "pointer";
+
+        await loadAvailable();
+
+        alert("Maintenance Removed Successfully");
+    }
+}
+
+async function leaveRoom(roomName){
+
+    const confirmLeave =
+        confirm(
+            "Vacate " + roomName + "?"
+        );
+
+    if(!confirmLeave){
+        return;
+    }
+
+    const response =
+        await fetch(
+            "/api/leave/" +
+            encodeURIComponent(roomName),
+            {
+                method:"POST"
+            });
+
+    const result =
+        await response.text();
+
+    alert(result);
+
+    loadOccupied();
+
+    loadAvailable();
+}
+function toggleOtherReason(){
+
+    const reason =
+        document.getElementById("reason");
+
+    const otherReason =
+        document.getElementById("otherReason");
+
+    if(reason.value === "Others"){
+
+        otherReason.style.display =
+            "block";
+
+        otherReason.required = true;
+
+    }else{
+
+        otherReason.style.display =
+            "none";
+
+        otherReason.required = false;
+
+        otherReason.value = "";
+    }
+}
+
+</script>
+
+</body>
+</html>
