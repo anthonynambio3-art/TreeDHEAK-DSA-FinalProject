@@ -612,6 +612,7 @@ table th{
 
         </div>
     </div> 
+
 <script>
 window.onload = function(){
 
@@ -1022,9 +1023,22 @@ async function addSchedule(){
                 : document.getElementById("reason").value,
     };
 
-    alert("Schedule Added");
+        const response =
+        await fetch("/api/schedule",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(body)
+        });
 
-    loadAvailable();
+    const result =
+        await response.text();
+
+    alert(result);
+
+    await loadAvailable();
+    await loadOccupied();
 }
 
 async function checkRoomStatus(){
