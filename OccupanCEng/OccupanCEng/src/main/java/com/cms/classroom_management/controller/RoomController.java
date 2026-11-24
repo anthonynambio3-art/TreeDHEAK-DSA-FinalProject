@@ -56,6 +56,7 @@ public class RoomController {
                 request.getStart(),
                 request.getEnd(),
                 request.getReason());
+        service.saveData();
         return "Success";
     }
 
@@ -85,6 +86,14 @@ public class RoomController {
         return service.getAllRooms();
     }
 
+    @GetMapping("/export")
+    public String exportExcel(){
+
+        service.exportToExcel();
+
+        return "Excel exported successfully.";
+    }
+
     @PostMapping("/maintenance")
     public String setMaintenance(
             @RequestBody MaintenanceRequest req){
@@ -102,8 +111,8 @@ public class RoomController {
         }
 
         room.maintenance();
-
-        return "Room marked as maintenance.";
+        service.saveData();
+        return "Room marked as maintenance.";     
     }
 
     @PostMapping("/maintenance/remove")
@@ -124,7 +133,7 @@ public class RoomController {
         }
 
         room.vacant();
-
+        service.saveData();
         return "Maintenance Removed.";
     }
 
@@ -146,7 +155,22 @@ public class RoomController {
         }
 
         room.leaving();
-
+        service.saveData();
         return "Room Vacated.";
+    }
+
+    @PostMapping("/export")
+    public String exportExcel(
+            @RequestBody MaintenanceRequest req){
+
+        if(!ADMIN_PASSWORD.equals(
+                req.getPassword())){
+
+            return "Invalid admin password.";
+        }
+
+        service.exportToExcel();
+
+        return "Excel Exported Successfully.";
     }
 }
