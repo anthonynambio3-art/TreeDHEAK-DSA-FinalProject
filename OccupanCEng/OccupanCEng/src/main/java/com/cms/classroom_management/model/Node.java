@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Node {
+public class Node implements Serializable{
+    private static final long serialVersionUID = 1L;
     private String data;
     @JsonIgnore
     private ArrayList<Node> children;
