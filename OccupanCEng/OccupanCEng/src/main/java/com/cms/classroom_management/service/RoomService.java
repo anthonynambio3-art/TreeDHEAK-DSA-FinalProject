@@ -20,15 +20,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RoomService {
-
     private Node root;
-
     public RoomService() {
         initializeTree();
         loadData();
     }
-
-
+    
     private void initializeTree() {
         root = new Node("College of Engineering");
         
@@ -132,31 +129,14 @@ public class RoomService {
 
    public List<RoomDTO> getAllRooms(){
         root.updateStatusByTime();
-
         List<RoomDTO> rooms = new ArrayList<>();
-
         collectRooms(root, rooms);
-
         return rooms;
     }
 
     private void collectRooms(Node current, List<RoomDTO> rooms){
         if(current.getStatus() != null){
-
-            rooms.add(new RoomDTO(
-                current.getData(),
-
-                current.getStatus().toString(),
-
-                current.getOccupator(),
-
-                current.getFaculty(),
-
-                current.getReason(),
-
-                current.getSched()
-
-            ));
+            rooms.add(new RoomDTO(current.getData(), current.getStatus().toString(), current.getOccupator(), current.getFaculty(), current.getReason(), current.getSched()));
         }
 
         for(Node child : current.getChildren()){
@@ -165,181 +145,91 @@ public class RoomService {
     }
 
     public List<OccupiedRoomDTO> getOccupiedRooms(){
-
         root.updateStatusByTime();
-
-        List<OccupiedRoomDTO> rooms =
-                new ArrayList<>();
-
+        List<OccupiedRoomDTO> rooms = new ArrayList<>();
         collectOccupiedRooms(root, rooms);
-
         return rooms;
     }
 
-    private void collectOccupiedRooms(
-            Node current,
-            List<OccupiedRoomDTO> rooms){
-
-        if(current.getStatus() ==
-                Node.Status.OCCUPIED){
-
-            rooms.add(
-                new OccupiedRoomDTO(
-                    current.getData(),
-                    current.getOccupator(),
-                    current.getSched()
+    private void collectOccupiedRooms( Node current, List<OccupiedRoomDTO> rooms){
+        if(current.getStatus() == Node.Status.OCCUPIED){
+            rooms.add(new OccupiedRoomDTO(current.getData(), current.getOccupator(), current.getSched()
                 )
             );
         }
 
-        for(Node child :
-                current.getChildren()){
-
-            collectOccupiedRooms(
-                    child,
-                    rooms);
+        for(Node child : current.getChildren()){
+            collectOccupiedRooms( child, rooms);
         }
     }
-
+    
     public void saveData() {
-
-    try {
-
-        java.io.File dir =
-                new java.io.File("data");
-
-        if(!dir.exists()) {
-            dir.mkdirs();
+        try {
+            java.io.File dir = new java.io.File("data");
+            if(!dir.exists()) {
+                dir.mkdirs();
+            }
+            
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/rooms.ser"));
+            out.writeObject(root);
+            out.close();
+            exportToExcel();
+            System.out.println("SAVE SUCCESS -> data/rooms.ser");
+        } catch(Exception e) {
+    
+            e.printStackTrace();
         }
-
-        ObjectOutputStream out =
-                new ObjectOutputStream(
-                        new FileOutputStream(
-                                "data/rooms.ser"));
-
-        out.writeObject(root);
-
-        out.close();
-        exportToExcel();
-        System.out.println("SAVE SUCCESS -> data/rooms.ser");
-
-    } catch(Exception e) {
-
-        e.printStackTrace();
     }
-}
 
     private void loadData() {
-        try(ObjectInputStream in =
-                new ObjectInputStream(
-                        new FileInputStream("data/rooms.ser"))) {
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/rooms.ser"))) {
 
             root = (Node) in.readObject();
             exportToExcel();
             System.out.println("LOAD SUCCESS");
-
         } catch(Exception e) {
 
             System.out.println("NO SAVE FILE");
-
             initializeTree();
         }
-
     }
 
     public void exportToExcel() {
-
         try {
-
-            Workbook workbook =
-                    new XSSFWorkbook();
-
-            Sheet sheet =
-                    workbook.createSheet("Rooms");
-
-            Row header =
-                    sheet.createRow(0);
-
-            header.createCell(0)
-                .setCellValue("Room");
-
-            header.createCell(1)
-                .setCellValue("Status");
-
-            header.createCell(2)
-                .setCellValue("Occupant");
-
-            header.createCell(3)
-                .setCellValue("Faculty");
-
-            header.createCell(4)
-                .setCellValue("Reason");
-
-            header.createCell(5)
-                .setCellValue("Schedule");
-
-            List<RoomDTO> rooms =
-                    getAllRooms();
-
+            Workbook workbook = new XSSFWorkbook();
+            Sheet sheet = workbook.createSheet("Rooms");
+            Row header = sheet.createRow(0);
+            header.createCell(0).setCellValue("Room");
+            header.createCell(1).setCellValue("Status");
+            header.createCell(2).setCellValue("Occupant");
+            header.createCell(3).setCellValue("Faculty");
+            header.createCell(4).setCellValue("Reason");
+            header.createCell(5).setCellValue("Schedule");
+            List<RoomDTO> rooms = getAllRooms();
             int rowNum = 1;
 
             for(RoomDTO room : rooms){
-
-                Row row =
-                        sheet.createRow(rowNum++);
-
-                row.createCell(0)
-                .setCellValue(room.getName());
-
-                row.createCell(1)
-                .setCellValue(room.getStatus());
-
-                row.createCell(2)
-                .setCellValue(
-                    room.getOccupant() == null
-                    ? ""
-                    : room.getOccupant());
-
-                row.createCell(3)
-                .setCellValue(
-                    room.getFaculty() == null
-                    ? ""
-                    : room.getFaculty());
-
-                row.createCell(4)
-                .setCellValue(
-                    room.getReason() == null
-                    ? ""
-                    : room.getReason());
-
-                row.createCell(5)
-                .setCellValue(
-                    room.getSchedule() == null
-                    ? ""
-                    : room.getSchedule());
+            
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(room.getName());
+                row.createCell(1).setCellValue(room.getStatus());
+                row.createCell(2).setCellValue(room.getOccupant() == null ? "" : room.getOccupant());
+                row.createCell(3).setCellValue(room.getFaculty() == null ? "" : room.getFaculty());
+                row.createCell(4).setCellValue(room.getReason() == null ? "" : room.getReason());
+                row.createCell(5).setCellValue(room.getSchedule() == null ? "" : room.getSchedule());
             }
 
-            FileOutputStream fos =
-                    new FileOutputStream(
-                            "data/ClassroomData.xlsx");
-
+            FileOutputStream fos = new FileOutputStream("data/ClassroomData.xlsx");
             workbook.write(fos);
-
             workbook.close();
-
             fos.close();
-
         }catch(Exception e){
-
             e.printStackTrace();
         }
     }
 
     public void manualSave() {
-
         saveData();
-
-        System.out.println(
-            "MANUAL SAVE SUCCESS");
+        System.out.println("MANUAL SAVE SUCCESS");
     }
 }
