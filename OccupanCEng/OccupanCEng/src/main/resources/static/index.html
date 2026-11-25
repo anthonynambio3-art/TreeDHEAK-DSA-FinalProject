@@ -615,49 +615,24 @@ table th{
 
 <script>
 window.onload = function(){
-
     const now = new Date();
-
     const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const hour = String(now.getHours()).padStart(2, "0");
+    const minute = String(now.getMinutes()).padStart(2, "0");
+    const minDateTime = `${year}-${month}-${day}T${hour}:${minute}`;
 
-    const month =
-        String(now.getMonth() + 1)
-        .padStart(2, "0");
-
-    const day =
-        String(now.getDate())
-        .padStart(2, "0");
-
-    const hour =
-        String(now.getHours())
-        .padStart(2, "0");
-
-    const minute =
-        String(now.getMinutes())
-        .padStart(2, "0");
-
-    const minDateTime =
-        `${year}-${month}-${day}T${hour}:${minute}`;
-
-    document.getElementById("start")
-        .min = minDateTime;
-
-    document.getElementById("end")
-        .min = minDateTime;
+    document.getElementById("start").min = minDateTime;
+    document.getElementById("end").min = minDateTime;
 }
 
 async function loadAvailable(){
-
-    const response =
-        await fetch("/api/rooms");
-
-    const rooms =
-        await response.json();
-
+    const response = await fetch("/api/rooms");
+    const rooms = await response.json();
     let firstFloor = "";
     let secondFloor = "";
     let thirdFloor = "";
-
     let elb1 = "";
     let elb2 = "";
     let elb3 = "";
@@ -665,15 +640,15 @@ async function loadAvailable(){
     let elb5 = "";
 
     rooms.forEach(room => {
-
         let colorClass = "";
-
         if(room.status === "VACANT"){
             colorClass = "vacant";
         }
+            
         else if(room.status === "OCCUPIED"){
             colorClass = "occupied";
         }
+            
         else{
             colorClass = "maintenance";
         }
@@ -681,190 +656,102 @@ async function loadAvailable(){
         let tooltip = "";
 
         if(room.status === "OCCUPIED"){
-
-            tooltip = `
-                <div class="room-tooltip">
-
-                    <strong>Occupant</strong><br>
-                    ${room.occupant || "Unknown"}
-
-                    <br><br>
-
-                    <strong>Schedule</strong><br>
-                    ${room.schedule || "-"}
-
-                </div>
-            `;
+            tooltip = `<div class="room-tooltip"> <strong>Occupant</strong><br> ${room.occupant || "Unknown"} <br><br> <strong>Schedule</strong><br> ${room.schedule || "-"} </div>`;
         }
+            
         else if(room.status === "MAINTENANCE"){
-
-            tooltip = `
-                <div class="room-tooltip">
-
-                    <strong>Status</strong><br>
-                    Under Maintenance
-
-                </div>
-            `;
+            tooltip = `<div class="room-tooltip"> <strong>Status</strong><br> Under Maintenance </div>`;
         }
 
-        let card = `
-            <div class="room-cell ${colorClass}">
-
-                <div class="room-name">
-                    ${room.name}
-                </div>
-
-                <div class="room-status">
-                    ${room.status}
-                </div>
-
-                ${tooltip}
-
-            </div>
-        `;
-
+        let card = `<div class="room-cell ${colorClass}"> <div class="room-name"> ${room.name} </div> <div class="room-status"> ${room.status} </div> ${tooltip} </div>`;
         if(room.name === "Rm. 101"){
+            firstFloor += card;
+        }
+                
+        else if(room.name === "Rm. 201" || room.name === "Rm. 202" || room.name === "Rm. 203" || room.name === "Rm. 204" || room.name === "DES LAB"){
+            secondFloor += card;
 
-    firstFloor += card;
-
-    }
-    else if(
-        room.name === "Rm. 201" ||
-        room.name === "Rm. 202" ||
-        room.name === "Rm. 203" ||
-        room.name === "Rm. 204" ||
-        room.name === "DES LAB"
-    ){
-
-        secondFloor += card;
-
-    }
-    else if(
-        room.name === "Rm. 301" ||
-        room.name === "Rm. 302" ||
-        room.name === "Rm. 303" ||
-        room.name === "Rm. 304" ||
-        room.name === "Rm. 305"
-    ){
-
-        thirdFloor += card;
-
-    }
-    else if(
-        room.name === "ELB 11" ||
-        room.name === "ELB 12" ||
-        room.name === "ELB 13"
-    ){
-
-        elb1 += card;
-
-    }
-    else if(
-        room.name === "ELB 21" ||
-        room.name === "ELB 22" ||
-        room.name === "ELB 23"
-    ){
-
-        elb2 += card;
-
-    }
-    else if(
-        room.name === "ELB 31" ||
-        room.name === "ELB 32" ||
-        room.name === "ELB 33"
-    ){
-
-        elb3 += card;
-
-    }
-    else if(
-        room.name === "ELB 41" ||
-        room.name === "ELB 42" ||
-        room.name === "ELB 43"
-    ){
-
-        elb4 += card;
-
-    }
-    else{
-
-        elb5 += card;
-    }
+        }
+            
+        else if(room.name === "Rm. 301" || room.name === "Rm. 302" || room.name === "Rm. 303" || room.name === "Rm. 304" || room.name === "Rm. 305"){
+            thirdFloor += card;
+        }
+            
+        else if(room.name === "ELB 11" || room.name === "ELB 12" || room.name === "ELB 13"){
+            elb1 += card;
+        }
+            
+        else if(room.name === "ELB 21" || room.name === "ELB 22" || room.name === "ELB 23"){
+            elb2 += card;
+        }
+            
+        else if(room.name === "ELB 31" || room.name === "ELB 32" || room.name === "ELB 33"){
+            elb3 += card;
+        }
+            
+        else if(room.name === "ELB 41" || room.name === "ELB 42" || room.name === "ELB 43"){
+            elb4 += card;
+        }
+            
+        else{
+            elb5 += card;
+        }    
     });
 
     document.getElementById("availableRooms").innerHTML = `
         <h2 class="building-title">
         🏢 Old Building
         </h2>
-
-        <h3>1st Floor</h3>
-        <div class="room-grid">
-            ${firstFloor}
-        </div>
-
-        <h3>2nd Floor</h3>
-        <div class="room-grid">
-            ${secondFloor}
-        </div>
-
-        <h3>3rd Floor</h3>
-        <div class="room-grid">
-            ${thirdFloor}
-        </div>
-
+            <h3>1st Floor</h3>
+                <div class="room-grid">
+                    ${firstFloor}
+                </div>
+            <h3>2nd Floor</h3>
+                <div class="room-grid">
+                    ${secondFloor}
+                </div>
+            <h3>3rd Floor</h3>
+                <div class="room-grid">
+                    ${thirdFloor}
+                </div>
+                
         <h2 class="building-title">
         🏢 Engineering Laboratory Building
         </h2>
 
-        <h3>1st Floor</h3>
-        <div class="room-grid">
-            ${elb1}
-        </div>
-
-        <h3>2nd Floor</h3>
-        <div class="room-grid">
-            ${elb2}
-        </div>
-
-        <h3>3rd Floor</h3>
-        <div class="room-grid">
-            ${elb3}
-        </div>
-
-        <h3>4th Floor</h3>
-        <div class="room-grid">
-            ${elb4}
-        </div>
-
-        <h3>5th Floor</h3>
-        <div class="room-grid">
-            ${elb5}
-        </div>
-
+            <h3>1st Floor</h3>
+                <div class="room-grid">
+                    ${elb1}
+                </div>
+            <h3>2nd Floor</h3>
+                <div class="room-grid">
+                    ${elb2}
+                </div>
+            <h3>3rd Floor</h3>
+                <div class="room-grid">
+                    ${elb3}
+                </div>
+            <h3>4th Floor</h3>
+                <div class="room-grid">
+                    ${elb4}
+                </div>
+            <h3>5th Floor</h3>
+                <div class="room-grid">
+                    ${elb5}
+                </div>
         `;
-}
+    }
 
 async function loadOccupied(){
-
-    const response =
-        await fetch("/api/occupied");
-
-    const rooms =
-        await response.json();
-
+    const response = await fetch("/api/occupied");
+    const rooms = await response.json();
     let html = "";
 
     rooms.forEach(room => {
-
-        html += `
-        <tr>
+        html += `<tr>
             <td>${room.name}</td>
-
             <td>${room.occupant}</td>
-
             <td>${room.schedule}</td>
-
             <td>
                 <button
                     onclick="leaveRoom('${room.name}')"
@@ -876,28 +763,20 @@ async function loadOccupied(){
         `;
     });
 
-    document.getElementById(
-        "occupiedTable").innerHTML = html;
+    document.getElementById("occupiedTable").innerHTML = html;
 }
 
 async function searchRoom(){
-
-    const name =
-        document.getElementById("roomName").value;
-
+    const name = document.getElementById("roomName").value;
     if(name === ""){
         alert("Please select a room.");
         return;
     }
 
-    const response =
-        await fetch("/api/search/" + encodeURIComponent(name));
-
+    const response = await fetch("/api/search/" + encodeURIComponent(name));
     const room = await response.json();
-
     const panel = document.getElementById("maintenancePanel");
         panel.style.display = "none";
-
     let badgeClass = "";
 
     if(room.status === "VACANT"){
@@ -910,330 +789,192 @@ async function searchRoom(){
         badgeClass = "maintenance";
     }
 
-    document.getElementById("roomInfo").innerHTML = `
-        <div class="search-result">
-
+    document.getElementById("roomInfo").innerHTML = `<div class="search-result">
             <h3>${room.name}</h3>
-
             <p>
                 <strong>Status:</strong>
                 <span class="badge ${badgeClass}">
                     ${room.status}
                 </span>
             </p>
-
             <p>
                 <strong>Location:</strong>
                 ${room.location}
             </p>
-
             <p>
                 <strong>Occupant:</strong>
                 ${room.occupant || "None"}
             </p>
-
             <p>
                 <strong>Schedule:</strong>
                 ${room.schedule || "No Schedule"}
             </p>
-
         </div>
     `;
 }
 
 async function addSchedule(){
-
-    const roomName =
-        document.getElementById("scheduleRoom").value;
-
-    const roomResponse =
-        await fetch(
-            "/api/search/" +
-            encodeURIComponent(roomName));
-
-    const roomInfo =
-        await roomResponse.json();
+    const roomName = document.getElementById("scheduleRoom").value;
+    const roomResponse = await fetch("/api/search/" + encodeURIComponent(roomName));
+    const roomInfo = await roomResponse.json();
 
     if(roomInfo.status === "MAINTENANCE"){
-        alert(
-            "This room is under maintenance."
-        );
+        alert("This room is under maintenance.");
         return;
     }
 
     const startDate =new Date(document.getElementById("start").value);
-
-    const endDate =
-        new Date(
-            document.getElementById("end").value);
-
-    const now =
-        new Date();
+    const endDate = new Date(document.getElementById("end").value);
+    const now = new Date();
 
     if(startDate < now){
-
-        alert(
-            "Start date cannot be in the past."
-        );
-
+        alert("Start date cannot be in the past.");
         return;
     }
 
     if(endDate <= startDate){
-
-        alert(
-            "End date must be later than start date."
-        );
-
+        alert("End date must be later than start date.");
         return;
     }
 
     const selectedReason = document.getElementById("reason").value;
-
-    const otherReason =
-        document.getElementById("otherReason").value;
-
-    if(selectedReason === "Others" &&
-    otherReason.trim() === ""){
-
-        alert(
-            "Please specify the reason."
-        );
-
+    const otherReason = document.getElementById("otherReason").value;
+    
+    if(selectedReason === "Others" && otherReason.trim() === ""){
+        alert("Please specify the reason.");
         return;
     }
 
     const body = {
         room: roomName,
-
-        occupant:
-            document.getElementById("occupant").value,
-
-        faculty:
-            document.getElementById("faculty").value,
-
-        start:
-            document.getElementById("start").value,
-
-        end:
-            document.getElementById("end").value,
-        reason:
-            document.getElementById("reason").value === "Others"
+        occupant: document.getElementById("occupant").value,
+        faculty: document.getElementById("faculty").value,
+        start: document.getElementById("start").value,
+        end: document.getElementById("end").value,
+        reason: document.getElementById("reason").value === "Others"
                 ? document.getElementById("otherReason").value
                 : document.getElementById("reason").value,
     };
 
-        const response =
-        await fetch("/api/schedule",{
-            method:"POST",
-            headers:{
+        const response = await fetch("/api/schedule",{
+            method:"POST", headers:{
                 "Content-Type":"application/json"
             },
             body:JSON.stringify(body)
         });
 
-    const result =
-        await response.text();
-
+    const result = await response.text();
     alert(result);
-
     await loadAvailable();
     await loadOccupied();
 }
 
 async function checkRoomStatus(){
-
-    const roomName =
-        document.getElementById("scheduleRoom").value;
-
-    const panel =
-        document.getElementById("maintenancePanel");
-
-    const btn =
-        document.getElementById("scheduleBtn");
+    const roomName = document.getElementById("scheduleRoom").value;
+    const panel = document.getElementById("maintenancePanel");
+    const btn = document.getElementById("scheduleBtn");
 
     if(roomName === ""){
-
         panel.style.display = "none";
-
         btn.disabled = false;
         btn.innerText = "Save Schedule";
-
         return;
     }
 
     try{
-
-        const response =
-            await fetch(
-                "/api/search/" +
-                encodeURIComponent(roomName));
-
-        const room =
-            await response.json();
+        const response = await fetch("/api/search/" + encodeURIComponent(roomName));
+        const room = await response.json();
 
         if(room.status === "MAINTENANCE"){
-
             panel.style.display = "flex";
-
             btn.disabled = true;
-
-            btn.innerText =
-                "Room Under Maintenance";
-
-            btn.style.cursor =
-                "not-allowed";
-
-            btn.style.background =
-                "#9ca3af";
+            btn.innerText = "Room Under Maintenance";
+            btn.style.cursor = "not-allowed";
+            btn.style.background = "#9ca3af";
 
         }else{
-
             panel.style.display = "none";
-
             btn.disabled = false;
-
-            btn.innerText =
-                "Save Schedule";
-
-            btn.style.cursor =
-                "pointer";
-
-            btn.style.background =
-                "#2563eb";
+            btn.innerText = "Save Schedule";
+            btn.style.cursor = "pointer";
+            btn.style.background = "#2563eb";
         }
 
     }catch(error){
-
         console.error(error);
-
-        panel.style.display =
-            "none";
-
+        panel.style.display = "none";
         btn.disabled = false;
-
-        btn.innerText =
-            "Save Schedule";
+        btn.innerText = "Save Schedule";
     }
 }
 
 function closeMaintenancePanel(){
-
-    document.getElementById(
-        "maintenancePanel").style.display =
-        "none";
-
-    document.getElementById(
-        "adminPassword").value = "";
+    document.getElementById("maintenancePanel").style.display = "none";
+    document.getElementById("adminPassword").value = "";
 }
 
 async function removeMaintenance(){
-
     const room = document.getElementById("scheduleRoom").value;
-
     const password = document.getElementById("adminPassword").value;
-
     if(password === ""){
         alert("Enter admin password.");
         return;
     }
 
-    const response =
-        await fetch(
-            "/api/maintenance/remove",
-            {
-                method:"POST",
-                headers:{
+    const response = await fetch("/api/maintenance/remove", {
+                method:"POST", headers:{
                     "Content-Type":"application/json"
                 },
                 body:JSON.stringify({
-                    room: room,
-                    password: password
+                    room: room, password: password
                 })
             });
 
-    const result =
-        await response.text();
-
+    const result = await response.text();
     alert(result);
-
+    
     if(result === "Maintenance Removed."){
+        const btn = document.getElementById("scheduleBtn");
 
-        const btn =
-            document.getElementById(
-                "scheduleBtn");
-
-        document.getElementById(
-            "maintenancePanel").style.display =
-            "none";
-
-        document.getElementById(
-            "adminPassword").value = "";
-
+        document.getElementById("maintenancePanel").style.display = "none";
+        document.getElementById("adminPassword").value = "";
         btn.disabled = false;
-
         btn.innerText = "Save Schedule";
-
         btn.style.background = "#2563eb";
-
         btn.style.cursor = "pointer";
-
         await loadAvailable();
-
         alert("Maintenance Removed Successfully");
     }
 }
 
 async function leaveRoom(roomName){
-
-    const confirmLeave =
-        confirm(
-            "Vacate " + roomName + "?"
-        );
+    const confirmLeave = confirm("Vacate " + roomName + "?");
 
     if(!confirmLeave){
         return;
     }
 
-    const response =
-        await fetch(
-            "/api/leave/" +
-            encodeURIComponent(roomName),
-            {
+    const response = await fetch("/api/leave/" + encodeURIComponent(roomName), {
                 method:"POST"
             });
 
-    const result =
-        await response.text();
-
+    const result = await response.text();
     alert(result);
-
     loadOccupied();
-
     loadAvailable();
 }
 function toggleOtherReason(){
-
-    const reason =
-        document.getElementById("reason");
-
-    const otherReason =
-        document.getElementById("otherReason");
+    const reason = document.getElementById("reason");
+    const otherReason = document.getElementById("otherReason");
 
     if(reason.value === "Others"){
-
-        otherReason.style.display =
-            "block";
-
+        otherReason.style.display = "block";
         otherReason.required = true;
 
     }else{
 
-        otherReason.style.display =
-            "none";
-
+        otherReason.style.display = "none";
         otherReason.required = false;
-
         otherReason.value = "";
     }
 }
