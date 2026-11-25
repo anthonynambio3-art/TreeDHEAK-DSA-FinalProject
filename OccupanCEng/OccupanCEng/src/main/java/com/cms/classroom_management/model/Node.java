@@ -109,16 +109,10 @@ public class Node implements Serializable{
             String reason){
 
         this.status = Status.OCCUPIED;
-
         this.occupator = occ;
-
         this.faculty = faculty;
-
-
         this.inOccupy = iO;
-
         this.outOccupy = oO;
-        
         this.reason = reason;
     }
 
@@ -218,9 +212,7 @@ public class Node implements Serializable{
     }
 
     public void updateStatusByTime() {
-        if(status == Status.OCCUPIED &&
-        outOccupy != null &&
-        LocalDateTime.now().isAfter(outOccupy)) {
+        if(status == Status.OCCUPIED && outOccupy != null && LocalDateTime.now().isAfter(outOccupy)) {
             leaving();
         }
         for(Node child : children) {
