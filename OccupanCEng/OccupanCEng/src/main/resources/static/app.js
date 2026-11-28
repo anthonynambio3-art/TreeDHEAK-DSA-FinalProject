@@ -468,15 +468,44 @@ document.querySelectorAll('#searchStatusFilters .pill').forEach(pill => {
 // Minimal Card: Only Room Name & Status
 function buildRoomCard(room) {
   const status = (room.status || 'VACANT').toUpperCase();
+  const { building, floor } = parseBuildingAndFloor(room);
+  const isMine = isOccupiedByYou(room);
+
   let badgeClass = 'badge-vacant';
   if (status === 'OCCUPIED') badgeClass = 'badge-occupied';
   if (status === 'MAINTENANCE') badgeClass = 'badge-maintenance';
+
+  let infoBody = '';
+  if (status === 'VACANT') {
+    infoBody = `
+      <div class="hover-info-row">Status: <strong style="color:#34d399;">Available</strong></div>
+      <div class="hover-info-hint">Click to schedule this room</div>
+    `;
+  } else if (status === 'OCCUPIED') {
+    infoBody = `
+      <div class="hover-info-row"><strong>Occupant:</strong> ${escapeHtml(room.occupant || 'N/A')}${isMine ? ' (You)' : ''}</div>
+      ${room.faculty ? `<div class="hover-info-row"><strong>Faculty:</strong> ${escapeHtml(room.faculty)}</div>` : ''}
+      ${room.reason ? `<div class="hover-info-row"><strong>Purpose:</strong> ${escapeHtml(room.reason)}</div>` : ''}
+      <div class="hover-info-row"><strong>Schedule:</strong> ${escapeHtml(room.schedule || 'In session')}</div>
+      <div class="hover-info-hint">${isMine ? 'Click to view or vacate' : 'Click for full details'}</div>
+    `;
+  } else {
+    infoBody = `
+      <div class="hover-info-row">Status: <strong style="color:#fbbf24;">Under Maintenance</strong></div>
+      <div class="hover-info-hint">Temporarily unavailable</div>
+    `;
+  }
 
   return `
     <div class="room-card" onclick="openRoomModal('${escapeJs(room.name)}')" role="button" tabindex="0"
          onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openRoomModal('${escapeJs(room.name)}');}">
       <span class="room-name">${escapeHtml(room.name)}</span>
       <span class="badge ${badgeClass}">${escapeHtml(status)}</span>
+      <div class="room-hover-info">
+        <div class="hover-info-title">${escapeHtml(room.name)} • ${escapeHtml(floor)}</div>
+        <div class="hover-info-row" style="color:#94a3b8;font-size:0.74rem;">${escapeHtml(building)}</div>
+        ${infoBody}
+      </div>
     </div>
   `;
 }

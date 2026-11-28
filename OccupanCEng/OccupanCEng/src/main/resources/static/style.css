@@ -817,6 +817,7 @@ body {
 }
 
 .room-card {
+  position: relative;
   background: #fafafa;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -827,7 +828,7 @@ body {
   gap: 12px;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
 .room-card:hover {
@@ -835,6 +836,83 @@ body {
   border-color: var(--primary);
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  z-index: 25;
+}
+
+.room-card:active {
+  transform: translateY(0);
+}
+
+.room-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.room-loc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.room-hover-info {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%) translateY(6px);
+  width: 245px;
+  background: #111827;
+  color: #f8fafc;
+  border: 1px solid #374151;
+  border-radius: 11px;
+  padding: 12px 14px;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-align: left;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.24);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+  z-index: 30;
+}
+
+.room-hover-info::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: #111827 transparent transparent transparent;
+}
+
+.room-card:hover .room-hover-info,
+.room-card:focus-visible .room-hover-info {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+.hover-info-title {
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #fb923c;
+  margin-bottom: 4px;
+}
+
+.hover-info-row {
+  color: #e2e8f0;
+  margin-top: 2px;
+}
+
+.hover-info-hint {
+  margin-top: 6px;
+  padding-top: 5px;
+  border-top: 1px solid #1f2937;
+  font-size: 0.72rem;
+  color: #9ca3af;
 }
 
 .room-card:active {
