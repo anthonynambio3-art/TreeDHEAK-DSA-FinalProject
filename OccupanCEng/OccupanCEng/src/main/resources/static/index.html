@@ -1,985 +1,339 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classroom Management System</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, sans-serif;
-}
-
-body{
-    background:#f4f6f9;
-}
-
-header{
-    background:#1e3a8a;
-    color:white;
-    padding:15px;
-    text-align:center;
-}
-
-.container{
-    width:90%;
-    max-width:1200px;
-    margin:20px auto;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    margin-bottom:20px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
-}
-
-.card h2{
-    margin-bottom:15px;
-}
-
-button{
-    background:#2563eb;
-    color:white;
-    border:none;
-    padding:10px 15px;
-    border-radius:5px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#1d4ed8;
-}
-
-input, select{
-    width:100%;
-    padding:10px;
-    margin-top:5px;
-    margin-bottom:10px;
-}
-
-/* START NG SEARCH NG ROOM */
-select,
-input{
-    border:1px solid #ccc;
-    border-radius:8px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-table th, table td{
-    border:1px solid #ddd;
-    padding:10px;
-}
-
-table th{
-    background:#2563eb;
-    color:white;
-}
-
-.status-vacant{
-    color:green;
-    font-weight:bold;
-}
-
-.status-occupied{
-    color:red;
-    font-weight:bold;
-}
-
-.status-maintenance{
-    color:orange;
-    font-weight:bold;
-}
-
-.search-result{
-    margin-top:15px;
-    padding:20px;
-    border-radius:12px;
-    background:#f8fafc;
-    border-left:6px solid #2563eb;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
-}
-
-.search-result h3{
-    color:#2563eb;
-    margin-bottom:10px;
-}
-
-.badge{
-    display:inline-block;
-    padding:5px 12px;
-    border-radius:20px;
-    color:white;
-    font-size:14px;
-    font-weight:bold;
-}
-
-.vacant{
-    background:#16a34a;
-}
-
-.occupied{
-    background:#dc2626;
-}
-
-.maintenance{
-    background:#f59e0b;
-}
-.available-card{
-    background:white;
-    margin-top:10px;
-    padding:15px;
-    border-left:5px solid #16a34a;
-    border-radius:10px;
-}
-
-.status-badge{
-    display:inline-block;
-    margin-top:10px;
-    padding:8px 16px;
-    border-radius:50px;
-    font-weight:bold;
-}
-
-.vacant{
-    background:#16a34a;
-}
-
-.occupied{
-    background:#dc2626;
-}
-
-.maintenance{
-    background:#f59e0b;
-}
-
-.result-body{
-    padding:25px;
-}
-
-/* SEARCH NG ROOM END */
-/* START NG AVAILABLE ROOMS */
-
-.info-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px;
-    margin-bottom:10px;
-    background:#f8fafc;
-    border-radius:12px;
-}
-
-.label{
-    font-weight:bold;
-    color:#475569;
-}
-
-.value{
-    color:#0f172a;
-    font-weight:600;
-}
-
-.room-grid{
-    display:grid;
-    grid-template-columns:repeat(5, 1fr);
-    gap:15px;
-    margin-top:20px;
-}
-
-.room-cell{
-    height:100px;
-    border-radius:12px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    color:white;
-    font-weight:bold;
-    text-align:center;
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
-}
-
-.room-name{
-    font-size:18px;
-}
-
-.room-status{
-    font-size:12px;
-    margin-top:5px;
-}
-
-.vacant{
-    background:#22c55e;
-}
-
-.occupied{
-    background:#ef4444;
-}
-
-.maintenance{
-    background:#facc15;
-    color:black;
-}
-
-.building-title{
-    margin-top:30px;
-    margin-bottom:15px;
-    color:#1e3a8a;
-}
-
-.building-table{
-    margin-top:20px;
-}
-
-.building-table h2{
-    margin-top:25px;
-    color:#1e3a8a;
-}
-
-.building-table table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 4px 15px rgba(0,0,0,.1);
-}
-
-.building-table th{
-    background:#2563eb;
-    color:white;
-    padding:15px;
-}
-
-.building-table td{
-    padding:15px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.building-table tr:hover{
-    background:#f8fafc;
-}
-
-/* END NG AVAILABLE ROOM LIST */
-/* MAINTENANCE MODAL DESIGN START */
-
-.maintenance-modal{
-    display:none;
-    position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.6);
-    z-index:9999;
-
-    justify-content:center;
-    align-items:center;
-}
-
-.maintenance-content{
-    width:400px;
-    max-width:90%;
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);
-}
-
-.maintenance-content h2{
-    color:#dc2626;
-    margin-bottom:15px;
-}
-
-.maintenance-content input{
-    width:100%;
-    margin-top:15px;
-}
-
-.maintenance-content button{
-    margin-top:10px;
-    margin-right:5px;
-}
-
-/* Search ng Maintenance END DESIGN */
-
-/* OCCUPIED ROOMS DESIGN START */
-
-.occupied-card{
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 5px 15px rgba(0,0,0,.1);
-}
-
-.occupied-card table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-.occupied-card th{
-    background:#dc2626;
-    color:white;
-    padding:15px;
-    font-size:15px;
-}
-
-.occupied-card td{
-    padding:15px;
-    border-bottom:1px solid #e5e7eb;
-}
-
-.occupied-card tr:hover{
-    background:#fff5f5;
-}
-
-.room-badge{
-    background:#dc2626;
-    color:white;
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:bold;
-}
-
-.occupant-name{
-    font-weight:bold;
-    color:#1e3a8a;
-}
-
-.schedule-text{
-    color:#475569;
-    font-size:14px;
-}
-
-/* Occupied Rooms DESIGN END */
-
-.room-cell{
-    position:relative;
-    cursor:pointer;
-}
-
-.room-tooltip{
-    visibility:hidden;
-    opacity:0;
-
-    position:absolute;
-    bottom:110%;
-    left:50%;
-    transform:translateX(-50%);
-
-    width:250px;
-
-    background:#1e293b;
-    color:white;
-
-    padding:12px;
-
-    border-radius:10px;
-
-    z-index:1000;
-
-    transition:.3s;
-
-    text-align:left;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.3);
-}
-
-.room-cell:hover .room-tooltip{
-    visibility:visible;
-    opacity:1;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — EngiSpace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
-<header>
-    <h1>College of Engineering OccupanCEng System</h1>
-</header>
-
-<div class="container">
-
-    <div class="card">
-    <h2>Search Room</h2>
-
-    <select id="roomName">
-        <option value="">-- Select Room --</option>
-
-        <optgroup label="Old Building">
-            <option>Rm. 101</option>
-            <option>Rm. 201</option>
-            <option>Rm. 202</option>
-            <option>Rm. 203</option>
-            <option>Rm. 204</option>
-            <option>DES LAB</option>
-            <option>Rm. 301</option>
-            <option>Rm. 302</option>
-            <option>Rm. 303</option>
-            <option>Rm. 304</option>
-            <option>Rm. 305</option>
-        </optgroup>
-
-        <optgroup label="Engineering Laboratory Building">
-            <option>ELB 11</option>
-            <option>ELB 12</option>
-            <option>ELB 13</option>
-            <option>ELB 21</option>
-            <option>ELB 22</option>
-            <option>ELB 23</option>
-            <option>ELB 31</option>
-            <option>ELB 32</option>
-            <option>ELB 33</option>
-            <option>ELB 41</option>
-            <option>ELB 42</option>
-            <option>ELB 43</option>
-            <option>ELB 51</option>
-            <option>ELB 52</option>
-            <option>ELB 53</option>
-        </optgroup>
-    </select>
-
-    <button onclick="searchRoom()">Search</button>
-
-    <div id="roomInfo" style="margin-top:15px"></div>
-</div>
-
-    <div class="card">
-        <h2>Add Schedule</h2>
-         
-        <label>Room</label>
-        <select id="scheduleRoom" onchange="checkRoomStatus()">
-        <option value="">-- Select Room --</option>
-         
-        <optgroup label="Old Building">
-        <option>Rm. 101</option>
-        <option>Rm. 201</option>
-        <option>Rm. 202</option>
-        <option>Rm. 203</option>
-        <option>Rm. 204</option>
-        <option>DES LAB</option>
-        <option>Rm. 301</option>
-        <option>Rm. 302</option>
-        <option>Rm. 303</option>
-        <option>Rm. 304</option>
-        <option>Rm. 305</option>
-        </optgroup>
-         
-        <optgroup label="Engineering Laboratory Building">
-        <option>ELB 11</option>
-        <option>ELB 12</option>
-        <option>ELB 13</option>
-        <option>ELB 21</option>
-        <option>ELB 22</option>
-        <option>ELB 23</option>
-        <option>ELB 31</option>
-        <option>ELB 32</option>
-        <option>ELB 33</option>
-        <option>ELB 41</option>
-        <option>ELB 42</option>
-        <option>ELB 43</option>
-        <option>ELB 51</option>
-        <option>ELB 52</option>
-        <option>ELB 53</option>
-        </optgroup>
-        </select>
-         
-        <label>Class / Occupant</label>
-        <input type="text" id="occupant" placeholder="Class / Occupant">
-         
-        <label>Faculty In-Charge</label>
-        <select id="faculty">
-
-            <option value="">-- Select Faculty --</option>
-
-            <option>Engr. Alexandra Monleon</option>
-            <option>Engr. Jerold Lantoria</option>
-            <option>Engr. Ana Molato</option>
-            <option>Engr. Desiree Malalad</option>
-            <option>Engr. Erol Mampusti</option>
-
-        </select>
-        <label>Start Date & Time</label>
-        <input type="datetime-local" id="start">
-         
-        <label>End Date & Time</label>
-        <input type="datetime-local" id="end">
-         
-        <label>Reason for Room Usage</label>
-
-        <select id="reason" onchange="toggleOtherReason()">
-
-            <option value="">-- Select Reason --</option>
-
-            <option>Regular Class</option>
-
-            <option>Laboratory Activity</option>
-
-            <option>Department Meeting</option>
-
-            <option>Faculty Meeting</option>
-
-            <option>Student Organization Meeting</option>
-
-            <option>Research Activity</option>
-
-            <option>Seminar / Workshop</option>
-
-            <option>Review Session</option>
-
-            <option>Thesis Defense</option>
-
-            <option>Special Event</option>
-
-            <option>Others</option>
-
-        </select>
-
-        <input type="text" id="otherReason"
-            placeholder="Specify reason"
-            style="display:none;">
-
-        <button id="scheduleBtn" onclick="addSchedule()">
-            Save Schedule
-        </button>
+  <!-- Mobile Top Header -->
+  <header class="mobile-topbar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="brand-icon" style="width:34px;height:34px;font-size:0.95rem;">ES</div>
+      <strong style="font-size:1rem;">EngiSpace</strong>
     </div>
+    <button class="hamburger-btn" id="openSidebarBtn" aria-label="Open navigation">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </header>
 
-    <div class="card">
-        <h2>Available Rooms Dashboard</h2>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
-        <button onclick="loadAvailable()">
-            Refresh Room Status
-        </button>
-
-        <div id="availableRooms"></div>
-    </div>
-
-
-    <div class="card">
-        <h2>Occupied Rooms</h2>
-
-        <button onclick="loadOccupied()">
-            Load Occupied Rooms
-        </button>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Room</th>
-                    <th>Occupant</th>
-                    <th>Schedule</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-
-            <tbody id="occupiedTable"></tbody>
-        </table>
-    </div>
-    <div id="maintenancePanel" class="maintenance-modal">
-        <div class="maintenance-content">
-
-            <h2>🔒 Admin Access Required</h2>
-
-            <p>
-                This room is currently under maintenance.
-                Only administrators can remove maintenance mode.
-            </p>
-
-            <input
-                type="password"
-                id="adminPassword"
-                placeholder="Admin Password">
-
-            <button onclick="removeMaintenance()">
-                Remove Maintenance
-            </button>
-
-            <button onclick="closeMaintenancePanel()">
-                Close
-            </button>
-
+  <div class="app-shell">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">ES</div>
+        <div class="brand-text">
+          <h1>EngiSpace</h1>
+          <span>College of Engineering</span>
         </div>
-    </div> 
+      </div>
 
-<script>
-window.onload = function(){
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hour = String(now.getHours()).padStart(2, "0");
-    const minute = String(now.getMinutes()).padStart(2, "0");
-    const minDateTime = `${year}-${month}-${day}T${hour}:${minute}`;
+      <nav class="nav-group" aria-label="Main Navigation">
+        <div class="nav-label">Menu</div>
 
-    document.getElementById("start").min = minDateTime;
-    document.getElementById("end").min = minDateTime;
-}
+        <button class="nav-item active" data-section="dashboard">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+          </svg>
+          <span>Dashboard</span>
+        </button>
 
-async function loadAvailable(){
-    const response = await fetch("/api/rooms");
-    const rooms = await response.json();
-    let firstFloor = "";
-    let secondFloor = "";
-    let thirdFloor = "";
-    let elb1 = "";
-    let elb2 = "";
-    let elb3 = "";
-    let elb4 = "";
-    let elb5 = "";
+        <button class="nav-item" data-section="classrooms">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+          <span>Classrooms</span>
+          <span class="nav-badge" id="navTotalCount">0</span>
+        </button>
 
-    rooms.forEach(room => {
-        let colorClass = "";
-        if(room.status === "VACANT"){
-            colorClass = "vacant";
-        }
-            
-        else if(room.status === "OCCUPIED"){
-            colorClass = "occupied";
-        }
-            
-        else{
-            colorClass = "maintenance";
-        }
+        <button class="nav-item" data-section="schedule">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+          <span>Add Schedule</span>
+        </button>
 
-        let tooltip = "";
+        <button class="nav-item" data-section="maintenance">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          </svg>
+          <span>Maintenance</span>
+        </button>
+      </nav>
 
-        if(room.status === "OCCUPIED"){
-            tooltip = `<div class="room-tooltip"> <strong>Occupant</strong><br> ${room.occupant || "Unknown"} <br><br> <strong>Schedule</strong><br> ${room.schedule || "-"} </div>`;
-        }
-            
-        else if(room.status === "MAINTENANCE"){
-            tooltip = `<div class="room-tooltip"> <strong>Status</strong><br> Under Maintenance </div>`;
-        }
+      <div class="sidebar-footer">
+        <span>College of Engineering</span>
+        <span>v1.0</span>
+      </div>
+    </aside>
 
-        let card = `<div class="room-cell ${colorClass}"> <div class="room-name"> ${room.name} </div> <div class="room-status"> ${room.status} </div> ${tooltip} </div>`;
-        if(room.name === "Rm. 101"){
-            firstFloor += card;
-        }
-                
-        else if(room.name === "Rm. 201" || room.name === "Rm. 202" || room.name === "Rm. 203" || room.name === "Rm. 204" || room.name === "DES LAB"){
-            secondFloor += card;
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+      <div class="topbar">
+        <div class="page-heading">
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="refreshAllData()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+            </svg>
+            Refresh
+          </button>
+          <button class="btn btn-primary" onclick="navigateTo('schedule')">
+            + Schedule Room
+          </button>
+        </div>
+      </div>
 
-        }
-            
-        else if(room.name === "Rm. 301" || room.name === "Rm. 302" || room.name === "Rm. 303" || room.name === "Rm. 304" || room.name === "Rm. 305"){
-            thirdFloor += card;
-        }
-            
-        else if(room.name === "ELB 11" || room.name === "ELB 12" || room.name === "ELB 13"){
-            elb1 += card;
-        }
-            
-        else if(room.name === "ELB 21" || room.name === "ELB 22" || room.name === "ELB 23"){
-            elb2 += card;
-        }
-            
-        else if(room.name === "ELB 31" || room.name === "ELB 32" || room.name === "ELB 33"){
-            elb3 += card;
-        }
-            
-        else if(room.name === "ELB 41" || room.name === "ELB 42" || room.name === "ELB 43"){
-            elb4 += card;
-        }
-            
-        else{
-            elb5 += card;
-        }    
-    });
+      <main class="content-area">
 
-    document.getElementById("availableRooms").innerHTML = `
-        <h2 class="building-title">
-        🏢 Old Building
-        </h2>
-            <h3>1st Floor</h3>
-                <div class="room-grid">
-                    ${firstFloor}
-                </div>
-            <h3>2nd Floor</h3>
-                <div class="room-grid">
-                    ${secondFloor}
-                </div>
-            <h3>3rd Floor</h3>
-                <div class="room-grid">
-                    ${thirdFloor}
-                </div>
-                
-        <h2 class="building-title">
-        🏢 Engineering Laboratory Building
-        </h2>
+        <!-- SECTION 1: DASHBOARD (SEARCH BAR AT TOP OF STATISTICS, NO ROOMS GRID) -->
+        <section id="sec-dashboard" class="section-view active">
 
-            <h3>1st Floor</h3>
-                <div class="room-grid">
-                    ${elb1}
-                </div>
-            <h3>2nd Floor</h3>
-                <div class="room-grid">
-                    ${elb2}
-                </div>
-            <h3>3rd Floor</h3>
-                <div class="room-grid">
-                    ${elb3}
-                </div>
-            <h3>4th Floor</h3>
-                <div class="room-grid">
-                    ${elb4}
-                </div>
-            <h3>5th Floor</h3>
-                <div class="room-grid">
-                    ${elb5}
-                </div>
-        `;
-    }
+          <!-- Dashboard Top Search Bar -->
+          <div class="dashboard-search-bar">
+            <div class="search-input-wrap">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+              <input type="text" id="dashboardSearchInput" class="form-control" placeholder="Search classroom" autocomplete="off" />
+              <div id="dashboardSearchDropdown" class="search-dropdown"></div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitDashboardSearch()">Find Room</button>
+          </div>
 
-async function loadOccupied(){
-    const response = await fetch("/api/occupied");
-    const rooms = await response.json();
-    let html = "";
+          <!-- Statistics Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Total Classrooms</div>
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-sub">Old Bldg & Lab Bldg</div>
+              </div>
+              <div class="stat-icon icon-orange">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+              </div>
+            </div>
 
-    rooms.forEach(room => {
-        html += `<tr>
-            <td>${room.name}</td>
-            <td>${room.occupant}</td>
-            <td>${room.schedule}</td>
-            <td>
-                <button
-                    onclick="leaveRoom('${room.name}')"
-                    style="background:#dc2626;">
-                    Leave Room
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Vacant Rooms</div>
+                <div class="stat-value" style="color:var(--vacant-text);" id="statVacant">0</div>
+                <div class="stat-sub">Open for scheduling</div>
+              </div>
+              <div class="stat-icon icon-green">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Occupied Rooms</div>
+                <div class="stat-value" style="color:var(--occupied-text);" id="statOccupied">0</div>
+                <div class="stat-sub">Currently in use</div>
+              </div>
+              <div class="stat-icon icon-red">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div>
+                <div class="stat-label">Under Maintenance</div>
+                <div class="stat-value" style="color:var(--maint-text);" id="statMaint">0</div>
+                <div class="stat-sub">Temporarily unavailable</div>
+              </div>
+              <div class="stat-icon icon-amber">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Links & Recently Occupied -->
+          <div class="dashboard-split">
+            <div class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title">Quick Links</h3>
+              </div>
+              <div class="quick-links-grid">
+                <button class="quick-card" onclick="navigateTo('schedule')">
+                  <strong>+ Add Schedule</strong>
+                  <span>Occupy a room</span>
                 </button>
-            </td>
-        </tr>
-        `;
-    });
+                <button class="quick-card" onclick="openClassroomsWithFilter('ALL')">
+                  <strong>All Classrooms</strong>
+                  <span>Browse all buildings & floors</span>
+                </button>
+                <button class="quick-card" onclick="openClassroomsWithFilter('VACANT')">
+                  <strong>Vacant Classrooms</strong>
+                  <span>View all currently available rooms</span>
+                </button>
+                <button class="quick-card" onclick="navigateTo('maintenance')">
+                  <strong>Maintenance</strong>
+                  <span>Mark or clear room maintenance status</span>
+                </button>
+              </div>
+            </div>
 
-    document.getElementById("occupiedTable").innerHTML = html;
-}
+            <div class="panel">
+              <div class="panel-header">
+                <h3 class="panel-title">Recently Occupied Rooms</h3>
+                <button class="btn btn-soft-orange" style="padding:6px 12px;font-size:0.78rem;" onclick="openClassroomsWithFilter('OCCUPIED')">View All Occupied</button>
+              </div>
+              <div id="recentOccupiedContainer" class="recent-list"></div>
+            </div>
+          </div>
+        </section>
 
-async function searchRoom(){
-    const name = document.getElementById("roomName").value;
-    if(name === ""){
-        alert("Please select a room.");
-        return;
-    }
+        <!-- SECTION 2: CLASSROOMS (ALL ROOMS BY BUILDING & FLOOR, NO SEARCH INPUT, CLICK CARD TO SCHEDULE) -->
+        <section id="sec-classrooms" class="section-view">
+          <div class="search-toolbar">
+            <div class="search-filters-row" style="border-top:none;padding-top:0;">
+              <div class="filter-pills" id="searchBuildingFilters">
+                <span class="filter-label">Building:</span>
+                <button class="pill active" data-building="ALL">All Buildings</button>
+                <button class="pill" data-building="Old Engineering Building">Old Engineering Building</button>
+                <button class="pill" data-building="Engineering Laboratory Building">Engineering Laboratory Building</button>
+              </div>
 
-    const response = await fetch("/api/search/" + encodeURIComponent(name));
-    const room = await response.json();
-    const panel = document.getElementById("maintenancePanel");
-        panel.style.display = "none";
-    let badgeClass = "";
+              <div class="filter-pills" id="searchStatusFilters">
+                <span class="filter-label">Status:</span>
+                <button class="pill active" data-status="ALL">All</button>
+                <button class="pill" data-status="VACANT">Vacant</button>
+                <button class="pill" data-status="OCCUPIED">Occupied</button>
+                <button class="pill" data-status="MAINTENANCE">Maintenance</button>
+              </div>
+            </div>
+          </div>
 
-    if(room.status === "VACANT"){
-        badgeClass = "vacant";
-    }
-    else if(room.status === "OCCUPIED"){
-        badgeClass = "occupied";
-    }
-    else{
-        badgeClass = "maintenance";
-    }
+          <div id="searchResultsContainer"></div>
+        </section>
 
-    document.getElementById("roomInfo").innerHTML = `<div class="search-result">
-            <h3>${room.name}</h3>
-            <p>
-                <strong>Status:</strong>
-                <span class="badge ${badgeClass}">
-                    ${room.status}
-                </span>
-            </p>
-            <p>
-                <strong>Location:</strong>
-                ${room.location}
-            </p>
-            <p>
-                <strong>Occupant:</strong>
-                ${room.occupant || "None"}
-            </p>
-            <p>
-                <strong>Schedule:</strong>
-                ${room.schedule || "No Schedule"}
-            </p>
+        <!-- SECTION 3: ADD SCHEDULE -->
+        <section id="sec-schedule" class="section-view">
+          <div class="form-container">
+            <div id="scheduleAlert" class="alert-banner"></div>
+
+            <form id="scheduleForm" novalidate>
+              <div class="form-grid">
+                <div class="form-group" id="fg-room">
+                  <label for="schedRoom">Select Vacant Room <span class="req">*</span></label>
+                  <select id="schedRoom" class="form-control" required>
+                    <option value="">-- Choose a room --</option>
+                  </select>
+                  <span class="field-error">Please select a classroom.</span>
+                </div>
+
+                <div class="form-group" id="fg-occupant">
+                  <label for="schedOccupant">Program & Section <span class="req">*</span></label>
+                  <input type="text" id="schedOccupant" class="form-control" placeholder="e.g., BSCpE 2A" required />
+                  <span class="field-error">Program and section are required.</span>
+                </div>
+
+                <div class="form-group" id="fg-faculty">
+                  <label for="schedFaculty">Faculty / Instructor <span class="req">*</span></label>
+                  <input type="text" id="schedFaculty" class="form-control" placeholder="e.g., Engr. Juan Dela Cruz" required />
+                  <span class="field-error">Faculty name is required.</span>
+                </div>
+
+                <div class="form-group" id="fg-reason">
+                  <label for="schedReason">Subject / Purpose <span class="req">*</span></label>
+                  <input type="text" id="schedReason" class="form-control" placeholder="e.g., Data Structures Lecture" required />
+                  <span class="field-error">Please enter a subject or purpose.</span>
+                </div>
+
+                <div class="form-group" id="fg-start">
+                  <label for="schedStart">Start Date & Time <span class="req">*</span></label>
+                  <input type="datetime-local" id="schedStart" class="form-control" required />
+                  <span class="field-error">Valid start date & time required.</span>
+                </div>
+
+                <div class="form-group" id="fg-end">
+                  <label for="schedEnd">End Date & Time <span class="req">*</span></label>
+                  <input type="datetime-local" id="schedEnd" class="form-control" required />
+                  <span class="field-error">End time must be after start time.</span>
+                </div>
+              </div>
+
+              <div style="margin-top:22px;display:flex;gap:12px;flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary" id="submitScheduleBtn">Confirm & Occupy Room</button>
+                <button type="reset" class="btn btn-secondary" onclick="clearFormErrors()">Clear Form</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- SECTION 4: MAINTENANCE -->
+        <section id="sec-maintenance" class="section-view">
+          <div class="form-container" style="max-width:560px;">
+            <div class="panel-header">
+              <h3 class="panel-title">Room Maintenance Control</h3>
+            </div>
+            <div id="maintAlert" class="alert-banner"></div>
+            <form id="maintenanceForm" autocomplete="off" onsubmit="return false;">
+              <div class="form-group" style="margin-bottom:14px;">
+                <label for="maintRoom">Target Classroom <span class="req">*</span></label>
+                <select id="maintRoom" class="form-control" required>
+                  <option value="">-- Select classroom --</option>
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:18px;">
+                <label for="maintPassword">Admin Password <span class="req">*</span></label>
+                <input type="password" id="maintPassword" class="form-control" placeholder="Enter admin password" autocomplete="new-password" required />
+              </div>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button type="button" class="btn btn-primary" onclick="handleMaintenance('set')">Mark Under Maintenance</button>
+                <button type="button" class="btn btn-secondary" onclick="handleMaintenance('remove')">Remove Maintenance</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Room Click Action Modal -->
+  <div id="roomActionModal" class="modal-overlay" onclick="closeRoomModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalRoomName">Room Name</h3>
+          <p id="modalRoomLoc" class="room-loc">Building • Floor</p>
         </div>
-    `;
-}
+        <span id="modalRoomBadge" class="badge badge-vacant">VACANT</span>
+      </div>
+      <div id="modalRoomDetails" class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeRoomModal()">Close</button>
+        <div id="modalPrimaryAction"></div>
+      </div>
+    </div>
+  </div>
 
-async function addSchedule(){
-    const roomName = document.getElementById("scheduleRoom").value;
-    const roomResponse = await fetch("/api/search/" + encodeURIComponent(roomName));
-    const roomInfo = await roomResponse.json();
+  <div id="toast" class="toast"></div>
 
-    if(roomInfo.status === "MAINTENANCE"){
-        alert("This room is under maintenance.");
-        return;
-    }
-
-    const startDate =new Date(document.getElementById("start").value);
-    const endDate = new Date(document.getElementById("end").value);
-    const now = new Date();
-
-    if(startDate < now){
-        alert("Start date cannot be in the past.");
-        return;
-    }
-
-    if(endDate <= startDate){
-        alert("End date must be later than start date.");
-        return;
-    }
-
-    const selectedReason = document.getElementById("reason").value;
-    const otherReason = document.getElementById("otherReason").value;
-    
-    if(selectedReason === "Others" && otherReason.trim() === ""){
-        alert("Please specify the reason.");
-        return;
-    }
-
-    const body = {
-        room: roomName,
-        occupant: document.getElementById("occupant").value,
-        faculty: document.getElementById("faculty").value,
-        start: document.getElementById("start").value,
-        end: document.getElementById("end").value,
-        reason: document.getElementById("reason").value === "Others"
-                ? document.getElementById("otherReason").value
-                : document.getElementById("reason").value,
-    };
-
-        const response = await fetch("/api/schedule",{
-            method:"POST", headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(body)
-        });
-
-    const result = await response.text();
-    alert(result);
-    await loadAvailable();
-    await loadOccupied();
-}
-
-async function checkRoomStatus(){
-    const roomName = document.getElementById("scheduleRoom").value;
-    const panel = document.getElementById("maintenancePanel");
-    const btn = document.getElementById("scheduleBtn");
-
-    if(roomName === ""){
-        panel.style.display = "none";
-        btn.disabled = false;
-        btn.innerText = "Save Schedule";
-        return;
-    }
-
-    try{
-        const response = await fetch("/api/search/" + encodeURIComponent(roomName));
-        const room = await response.json();
-
-        if(room.status === "MAINTENANCE"){
-            panel.style.display = "flex";
-            btn.disabled = true;
-            btn.innerText = "Room Under Maintenance";
-            btn.style.cursor = "not-allowed";
-            btn.style.background = "#9ca3af";
-
-        }else{
-            panel.style.display = "none";
-            btn.disabled = false;
-            btn.innerText = "Save Schedule";
-            btn.style.cursor = "pointer";
-            btn.style.background = "#2563eb";
-        }
-
-    }catch(error){
-        console.error(error);
-        panel.style.display = "none";
-        btn.disabled = false;
-        btn.innerText = "Save Schedule";
-    }
-}
-
-function closeMaintenancePanel(){
-    document.getElementById("maintenancePanel").style.display = "none";
-    document.getElementById("adminPassword").value = "";
-}
-
-async function removeMaintenance(){
-    const room = document.getElementById("scheduleRoom").value;
-    const password = document.getElementById("adminPassword").value;
-    if(password === ""){
-        alert("Enter admin password.");
-        return;
-    }
-
-    const response = await fetch("/api/maintenance/remove", {
-                method:"POST", headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    room: room, password: password
-                })
-            });
-
-    const result = await response.text();
-    alert(result);
-    
-    if(result === "Maintenance Removed."){
-        const btn = document.getElementById("scheduleBtn");
-
-        document.getElementById("maintenancePanel").style.display = "none";
-        document.getElementById("adminPassword").value = "";
-        btn.disabled = false;
-        btn.innerText = "Save Schedule";
-        btn.style.background = "#2563eb";
-        btn.style.cursor = "pointer";
-        await loadAvailable();
-        alert("Maintenance Removed Successfully");
-    }
-}
-
-async function leaveRoom(roomName){
-    const confirmLeave = confirm("Vacate " + roomName + "?");
-
-    if(!confirmLeave){
-        return;
-    }
-
-    const response = await fetch("/api/leave/" + encodeURIComponent(roomName), {
-                method:"POST"
-            });
-
-    const result = await response.text();
-    alert(result);
-    loadOccupied();
-    loadAvailable();
-}
-function toggleOtherReason(){
-    const reason = document.getElementById("reason");
-    const otherReason = document.getElementById("otherReason");
-
-    if(reason.value === "Others"){
-        otherReason.style.display = "block";
-        otherReason.required = true;
-
-    }else{
-
-        otherReason.style.display = "none";
-        otherReason.required = false;
-        otherReason.value = "";
-    }
-}
-
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
