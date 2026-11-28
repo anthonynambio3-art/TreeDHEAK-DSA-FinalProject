@@ -1,34 +1,35 @@
 package com.cms.classroom_management.service;
 
+import com.cms.classroom_management.dto.OccupiedRoomDTO;
+import com.cms.classroom_management.dto.RoomDTO;
 import com.cms.classroom_management.model.Node;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.time.LocalDateTime;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
 
-import com.cms.classroom_management.dto.OccupiedRoomDTO;
-import com.cms.classroom_management.dto.RoomDTO;
+import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.stereotype.Service;
 
 @Service
 public class RoomService {
+
+    private static final String DATA_DIR = "data";
+    private static final String SER_FILE_PATH = DATA_DIR + "/rooms.ser";
+    private static final String EXCEL_FILE_PATH = DATA_DIR + "/ClassroomData.xlsx";
+
     private Node root;
+
     public RoomService() {
-        initializeTree();
         loadData();
     }
-    
+
     private void initializeTree() {
         root = new Node("College of Engineering");
-        
+
         Node old = new Node("Old Building");
         Node elb = new Node("Engineering Laboratory Building");
 
@@ -42,19 +43,19 @@ public class RoomService {
         old.addChild(old1);
         old.addChild(old2);
         old.addChild(old3);
-        
-        Node rm101 = new Node ("SMART 101", Node.Status.VACANT);
-        Node rm201 = new Node ("SMART 201", Node.Status.VACANT);
-        Node rm202 = new Node ("Rm. 202", Node.Status.VACANT);
-        Node rm203 = new Node ("Rm. 203", Node.Status.OCCUPIED, "BSCpE 2A",LocalDateTime.of(2026, 11, 30, 9, 0), LocalDateTime.of(2026, 11, 30, 12, 0));
-        Node rm204 = new Node ("SMART 204", Node.Status.OCCUPIED, "BSCpE 2B", LocalDateTime.of(2026, 11, 30, 9, 0), LocalDateTime.of(2026, 11, 30, 12, 0));
-        Node dlab = new Node ("DES LAB", Node.Status.VACANT);
-        Node rm301 = new Node ("ELECTRONICS LAB", Node.Status.VACANT);
-        Node rm302 = new Node ("Rm. 302", Node.Status.MAINTENANCE);
-        Node rm303 = new Node ("Rm. 303", Node.Status.MAINTENANCE);
-        Node rm304 = new Node ("Rm. 304", Node.Status.VACANT);
-        Node rm305 = new Node ("Rm. 305", Node.Status.VACANT);
-        Node rm306 = new Node ("Rm. 306", Node.Status.VACANT);
+
+        Node rm101 = new Node("SMART 101", Node.Status.VACANT);
+        Node rm201 = new Node("SMART 201", Node.Status.VACANT);
+        Node rm202 = new Node("Rm. 202", Node.Status.VACANT);
+        Node rm203 = new Node("Rm. 203", Node.Status.OCCUPIED, "BSCpE 2A", LocalDateTime.of(2026, 11, 30, 9, 0), LocalDateTime.of(2026, 11, 30, 12, 0));
+        Node rm204 = new Node("SMART 204", Node.Status.OCCUPIED, "BSCpE 2B", LocalDateTime.of(2026, 11, 30, 9, 0), LocalDateTime.of(2026, 11, 30, 12, 0));
+        Node dlab = new Node("DES LAB", Node.Status.VACANT);
+        Node rm301 = new Node("ELECTRONICS LAB", Node.Status.VACANT);
+        Node rm302 = new Node("Rm. 302", Node.Status.MAINTENANCE);
+        Node rm303 = new Node("Rm. 303", Node.Status.MAINTENANCE);
+        Node rm304 = new Node("Rm. 304", Node.Status.VACANT);
+        Node rm305 = new Node("Rm. 305", Node.Status.VACANT);
+        Node rm306 = new Node("Rm. 306", Node.Status.VACANT);
 
         old1.addChild(rm101);
         old2.addChild(rm201);
@@ -81,21 +82,21 @@ public class RoomService {
         elb.addChild(elb4);
         elb.addChild(elb5);
 
-        Node elb11 = new Node ("ELB 11", Node.Status.VACANT);
-        Node elb12 = new Node ("ELB 12", Node.Status.VACANT);
-        Node elb13 = new Node ("ELB 13", Node.Status.VACANT);
-        Node elb21 = new Node ("ELB 21", Node.Status.VACANT);
-        Node elb22 = new Node ("ELB 22", Node.Status.VACANT);
-        Node elb23 = new Node ("ELB 23", Node.Status.MAINTENANCE);
-        Node elb31 = new Node ("ELB 31", Node.Status.VACANT);
-        Node elb32 = new Node ("ELB 32", Node.Status.VACANT);
-        Node elb33 = new Node ("ELB 32", Node.Status.VACANT);
-        Node elb41 = new Node ("ELB 41", Node.Status.VACANT);
-        Node elb42 = new Node ("ELB 42", Node.Status.VACANT);
-        Node elb43 = new Node ("ELB 43", Node.Status.MAINTENANCE);
-        Node elb51 = new Node ("ELB 51", Node.Status.VACANT);
-        Node elb52 = new Node ("ELB 52", Node.Status.VACANT);
-        Node elb53 = new Node ("ELB 53", Node.Status.VACANT);
+        Node elb11 = new Node("ELB 11", Node.Status.VACANT);
+        Node elb12 = new Node("ELB 12", Node.Status.VACANT);
+        Node elb13 = new Node("ELB 13", Node.Status.VACANT);
+        Node elb21 = new Node("ELB 21", Node.Status.VACANT);
+        Node elb22 = new Node("ELB 22", Node.Status.VACANT);
+        Node elb23 = new Node("ELB 23", Node.Status.MAINTENANCE);
+        Node elb31 = new Node("ELB 31", Node.Status.VACANT);
+        Node elb32 = new Node("ELB 32", Node.Status.VACANT);
+        Node elb33 = new Node("ELB 33", Node.Status.VACANT);
+        Node elb41 = new Node("ELB 41", Node.Status.VACANT);
+        Node elb42 = new Node("ELB 42", Node.Status.VACANT);
+        Node elb43 = new Node("ELB 43", Node.Status.MAINTENANCE);
+        Node elb51 = new Node("ELB 51", Node.Status.VACANT);
+        Node elb52 = new Node("ELB 52", Node.Status.VACANT);
+        Node elb53 = new Node("ELB 53", Node.Status.VACANT);
 
         elb1.addChild(elb11);
         elb1.addChild(elb12);
@@ -114,90 +115,114 @@ public class RoomService {
         elb5.addChild(elb53);
     }
 
-    public Node findRoom(String roomName){
-        root.updateStatusByTime();
+    private void syncTimeAndPersistIfChanged() {
+        if (root != null) {
+            root.updateStatusByTime();
+            saveData();
+        }
+    }
+
+    public Node findRoom(String roomName) {
+        syncTimeAndPersistIfChanged();
         return root.findRoom(roomName);
     }
 
-    public int availableRooms(){
+    public int availableRooms() {
+        syncTimeAndPersistIfChanged();
         return root.vacantCount();
     }
 
-    public Node getRoot(){
+    public Node getRoot() {
         return root;
     }
 
-   public List<RoomDTO> getAllRooms(){
-        root.updateStatusByTime();
+    public List<RoomDTO> getAllRooms() {
+        syncTimeAndPersistIfChanged();
         List<RoomDTO> rooms = new ArrayList<>();
         collectRooms(root, rooms);
         return rooms;
     }
 
-    private void collectRooms(Node current, List<RoomDTO> rooms){
-        if(current.getStatus() != null){
-            rooms.add(new RoomDTO(current.getData(), current.getStatus().toString(), current.getOccupator(), current.getFaculty(), current.getReason(), current.getSched()));
+    private void collectRooms(Node current, List<RoomDTO> rooms) {
+        if (current.getStatus() != null) {
+            rooms.add(new RoomDTO(
+                    current.getData(),
+                    current.getStatus().toString(),
+                    current.getOccupator(),
+                    current.getFaculty(),
+                    current.getReason(),
+                    current.getSched()
+            ));
         }
 
-        for(Node child : current.getChildren()){
+        for (Node child : current.getChildren()) {
             collectRooms(child, rooms);
         }
     }
 
-    public List<OccupiedRoomDTO> getOccupiedRooms(){
-        root.updateStatusByTime();
+    public List<OccupiedRoomDTO> getOccupiedRooms() {
+        syncTimeAndPersistIfChanged();
         List<OccupiedRoomDTO> rooms = new ArrayList<>();
         collectOccupiedRooms(root, rooms);
         return rooms;
     }
 
-    private void collectOccupiedRooms( Node current, List<OccupiedRoomDTO> rooms){
-        if(current.getStatus() == Node.Status.OCCUPIED){
-            rooms.add(new OccupiedRoomDTO(current.getData(), current.getOccupator(), current.getSched()
-                )
-            );
+    private void collectOccupiedRooms(Node current, List<OccupiedRoomDTO> rooms) {
+        if (current.getStatus() == Node.Status.OCCUPIED) {
+            rooms.add(new OccupiedRoomDTO(
+                    current.getData(),
+                    current.getOccupator(),
+                    current.getSched()
+            ));
         }
 
-        for(Node child : current.getChildren()){
-            collectOccupiedRooms( child, rooms);
+        for (Node child : current.getChildren()) {
+            collectOccupiedRooms(child, rooms);
         }
     }
-    
-    public void saveData() {
+
+    public synchronized void saveData() {
         try {
-            java.io.File dir = new java.io.File("data");
-            if(!dir.exists()) {
+            File dir = new File(DATA_DIR);
+            if (!dir.exists()) {
                 dir.mkdirs();
             }
-            
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("data/rooms.ser"));
-            out.writeObject(root);
-            out.close();
+
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(SER_FILE_PATH))) {
+                oos.writeObject(root);
+            }
+
             exportToExcel();
-            System.out.println("SAVE SUCCESS -> data/rooms.ser");
-        } catch(Exception e) {
-    
+            System.out.println("SAVE SUCCESS -> " + SER_FILE_PATH + " & " + EXCEL_FILE_PATH);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void loadData() {
-        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream("data/rooms.ser"))) {
-
-            root = (Node) in.readObject();
-            exportToExcel();
-            System.out.println("LOAD SUCCESS");
-        } catch(Exception e) {
-
-            System.out.println("NO SAVE FILE");
-            initializeTree();
+        File serFile = new File(SER_FILE_PATH);
+        if (serFile.exists() && serFile.length() > 0) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(serFile))) {
+                root = (Node) ois.readObject();
+                syncTimeAndPersistIfChanged();
+                exportToExcel();
+                System.out.println("LOAD SUCCESS <- " + SER_FILE_PATH);
+                return;
+            } catch (Exception e) {
+                System.err.println("Failed to read rooms.ser, reinitializing default tree.");
+                e.printStackTrace();
+            }
         }
+
+        System.out.println("NO rooms.ser FOUND -> Initializing default tree");
+        initializeTree();
+        saveData();
     }
 
     public void exportToExcel() {
-        try {
-            Workbook workbook = new XSSFWorkbook();
+        try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Rooms");
+
             Row header = sheet.createRow(0);
             header.createCell(0).setCellValue("Room");
             header.createCell(1).setCellValue("Status");
@@ -205,11 +230,12 @@ public class RoomService {
             header.createCell(3).setCellValue("Faculty");
             header.createCell(4).setCellValue("Reason");
             header.createCell(5).setCellValue("Schedule");
-            List<RoomDTO> rooms = getAllRooms();
-            int rowNum = 1;
 
-            for(RoomDTO room : rooms){
-            
+            List<RoomDTO> rooms = new ArrayList<>();
+            collectRooms(root, rooms);
+
+            int rowNum = 1;
+            for (RoomDTO room : rooms) {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(room.getName());
                 row.createCell(1).setCellValue(room.getStatus());
@@ -219,11 +245,15 @@ public class RoomService {
                 row.createCell(5).setCellValue(room.getSchedule() == null ? "" : room.getSchedule());
             }
 
-            FileOutputStream fos = new FileOutputStream("data/ClassroomData.xlsx");
-            workbook.write(fos);
-            workbook.close();
-            fos.close();
-        }catch(Exception e){
+            File dir = new File(DATA_DIR);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(EXCEL_FILE_PATH)) {
+                workbook.write(fos);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
